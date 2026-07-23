@@ -1,0 +1,17 @@
+export interface IRole {
+  id: number
+  name: string
+}
+
+// roles/permissions arrivent en tableaux de strings (getRoleNames(),
+// getAllPermissions()->pluck('name')) — pas d'objets imbriqués.
+export interface IUser {
+  id: number
+  name: string
+  email: string | null
+  phone: string
+  status: 'active' | 'pending' | 'suspended'
+  mobile_money_number: string | null
+  roles: string[]
+  permissions: string[]
+}
