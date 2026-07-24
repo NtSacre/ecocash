@@ -1,0 +1,134 @@
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Select } from '@/components/Select/Select'
+import { useMaterials } from '@/hooks/useMaterials'
+import { useAdminPartners } from '@/hooks/useAdminPartners'
+import { adminListingFormSchema, type AdminListingFormValues } from '@/application/validators/adminListingValidators'
+import type { IListing } from '@/core/interfaces/IListing'
+
+interface AdminListingFormProps {
+  initialValues?: IListing
+  onSubmit: (values: AdminListingFormValues) => Promise<void>
+  isSubmitting: boolean
+}
+
+export function AdminListingForm({ initialValues, onSubmit, isSubmitting }: AdminListingFormProps) {
+  const materialsQuery = useMaterials()
+  const partnersQuery = useAdminPartners()
+
+  const form = useForm<AdminListingFormValues>({
+    resolver: zodResolver(adminListingFormSchema),
+    defaultValues: initialValues
+      ? {
+          partner_id: initialValues.partner.id,
+          material_id: initialValues.material.id,
+          title: initialValues.title,
+          description: initialValues.description ?? undefined,
+          target_quantity: parseFloat(initialValues.target_quantity),
+          unit_price: parseFloat(initialValues.unit_price),
+          min_quantity_per_response: parseFloat(initialValues.min_quantity_per_response),
+          start_date: initialValues.start_date ?? undefined,
+          end_date: initialValues.end_date ?? undefined,
+        }
+      : undefined,
+  })
+
+  return (
+    <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+      <Select
+        error={form.formState.errors.partner_id?.message}
+        label="Partenaire"
+        onChange={(v) => form.setValue('partner_id', Number(v))}
+        options={(partnersQuery.data ?? []).map((p) => ({ value: p.id, label: p.name }))}
+        placeholder="Choisir un partenaire"
+        value={form.watch('partner_id')}
+      />
+
+      <Select
+        error={form.formState.errors.material_id?.message}
+        label="Matière"
+        onChange={(v) => form.setValue('material_id', Number(v))}
+        options={(materialsQuery.data ?? []).map((m) => ({ value: m.id, label: `${m.name} (${m.unit})` }))}
+        placeholder="Choisir une matière"
+        value={form.watch('material_id')}
+      />
+
+      <div>
+        <label className="ml-1 text-xs font-bold uppercase tracking-widest text-zinc-400">Titre</label>
+        <input
+          className="mt-2 w-full rounded-lg bg-surface-container-high px-4 py-3 font-medium text-on-surface focus:ring-2 focus:ring-primary/40"
+          type="text"
+          {...form.register('title')}
+        />
+        {form.formState.errors.title && <p className="ml-1 mt-1 text-xs text-error">{form.formState.errors.title.message}</p>}
+      </div>
+
+      <div>
+        <label className="ml-1 text-xs font-bold uppercase tracking-widest text-zinc-400">Description</label>
+        <textarea
+          className="mt-2 w-full rounded-lg bg-surface-container-high px-4 py-3 font-medium text-on-surface focus:ring-2 focus:ring-primary/40"
+          rows={2}
+          {...form.register('description')}
+        />
+      </div>
+
+      <div className="grid grid-cols-3 gap-3">
+        <div>
+          <label className="ml-1 text-xs font-bold uppercase tracking-widest text-zinc-400">Qté cible</label>
+          <input
+            className="mt-2 w-full rounded-lg bg-surface-container-high px-3 py-3 font-medium text-on-surface focus:ring-2 focus:ring-primary/40"
+            step="0.01"
+            type="number"
+            {...form.register('target_quantity', { valueAsNumber: true })}
+          />
+        </div>
+        <div>
+          <label className="ml-1 text-xs font-bold uppercase tracking-widest text-zinc-400">Prix/unité</label>
+          <input
+            className="mt-2 w-full rounded-lg bg-surface-container-high px-3 py-3 font-medium text-on-surface focus:ring-2 focus:ring-primary/40"
+            step="0.01"
+            type="number"
+            {...form.register('unit_price', { valueAsNumber: true })}
+          />
+        </div>
+        <div>
+          <label className="ml-1 text-xs font-bold uppercase tracking-widest text-zinc-400">Qté min</label>
+          <input
+            className="mt-2 w-full rounded-lg bg-surface-container-high px-3 py-3 font-medium text-on-surface focus:ring-2 focus:ring-primary/40"
+            step="0.01"
+            type="number"
+            {...form.register('min_quantity_per_response', { valueAsNumber: true })}
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className="ml-1 text-xs font-bold uppercase tracking-widest text-zinc-400">Date début</label>
+          <input
+            className="mt-2 w-full rounded-lg bg-surface-container-high px-3 py-3 font-medium text-on-surface focus:ring-2 focus:ring-primary/40"
+            type="date"
+            {...form.register('start_date')}
+          />
+        </div>
+        <div>
+          <label className="ml-1 text-xs font-bold uppercase tracking-widest text-zinc-400">Date fin</label>
+          <input
+            className="mt-2 w-full rounded-lg bg-surface-container-high px-3 py-3 font-medium text-on-surface focus:ring-2 focus:ring-primary/40"
+            type="date"
+            {...form.register('end_date')}
+          />
+          {form.formState.errors.end_date && <p className="mt-1 text-xs text-error">{form.formState.errors.end_date.message}</p>}
+        </div>
+      </div>
+
+      <button
+        className="w-full rounded-lg bg-primary py-3 font-headline font-bold text-on-primary disabled:opacity-60"
+        disabled={isSubmitting}
+        type="submit"
+      >
+        {isSubmitting ? 'Enregistrement...' : 'Enregistrer'}
+      </button>
+    </form>
+  )
+}

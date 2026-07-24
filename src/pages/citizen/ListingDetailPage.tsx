@@ -6,6 +6,7 @@ import { EmptyState } from '@/components/EmptyState/EmptyState'
 import { Loader } from '@/components/Loader/Loader'
 import { MaterialIcon } from '@/components/Loader/MaterialIcon/MaterialIcon'
 import { TopBar } from '@/components/Loader/TopBar/TopBar'
+import { useAuthContext } from '@/context/AuthContext'
 import { useListingDetail } from '@/hooks/useListingDetail'
 import { useRespondToListing } from '@/hooks/useRespondToListing'
 import { createRespondSchema, type RespondFormValues } from '@/application/validators/listingValidators'
@@ -15,6 +16,7 @@ import { remainingQuantity, toNumber } from '@/utils/quantity'
 export default function ListingDetailPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
+  const { user } = useAuthContext()
   const [isResponding, setIsResponding] = useState(false)
   const [success, setSuccess] = useState(false)
 
@@ -24,6 +26,7 @@ export default function ListingDetailPage() {
   const listing = listingQuery.data
   const remaining = listing ? remainingQuantity(listing) : 0
   const min = listing ? toNumber(listing.min_quantity_per_response) : 0
+  const isOwnListing = !!(user && listing && user.id === listing.partner.id)
 
   const form = useForm<RespondFormValues>({
     resolver: zodResolver(createRespondSchema(min, remaining)),
@@ -97,11 +100,19 @@ export default function ListingDetailPage() {
           </section>
         )}
 
-        {!success && remaining <= 0 && (
+        {!success && isOwnListing && (
+          <EmptyState
+            description="Vous ne pouvez pas répondre à votre propre annonce."
+            icon="block"
+            title="C'est votre annonce"
+          />
+        )}
+
+        {!success && !isOwnListing && remaining <= 0 && (
           <EmptyState description="Toute la quantité ciblée a déjà été réservée." icon="check_circle" title="Annonce complète" />
         )}
 
-        {!success && remaining > 0 && !isResponding && (
+        {!success && !isOwnListing && remaining > 0 && !isResponding && (
           <button
             className="action-gradient w-full rounded-full py-5 font-headline text-xl font-extrabold text-white shadow-lg transition-transform active:scale-95"
             onClick={() => setIsResponding(true)}
@@ -111,7 +122,7 @@ export default function ListingDetailPage() {
           </button>
         )}
 
-        {!success && isResponding && (
+        {!success && !isOwnListing && isResponding && (
           <form className="space-y-6" onSubmit={onSubmit}>
             <div className="flex items-center justify-between gap-6 rounded-lg bg-surface-container-lowest p-6 shadow-sm">
               <button

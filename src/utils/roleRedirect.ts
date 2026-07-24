@@ -1,10 +1,12 @@
 import type { IUser } from '@/core/interfaces/IUser'
 import { UserRole } from '@/core/enums/UserRole'
+import { getPrimaryRole } from '@/utils/primaryRole'
 
 export function getHomeRouteForUser(user: IUser): string {
-  if (user.roles.includes(UserRole.Citizen)) return '/app'
-  if ([UserRole.Partner, UserRole.Agent, UserRole.SuperAdmin].some((r) => user.roles.includes(r))) {
-    return '/dashboard'
-  }
+  const role = getPrimaryRole(user)
+
+  if (role === UserRole.SuperAdmin) return '/dashboard'
+  if (role === UserRole.Citizen || role === UserRole.Partner || role === UserRole.Agent) return '/app'
+
   return '/'
 }

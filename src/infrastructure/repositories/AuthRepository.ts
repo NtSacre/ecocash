@@ -1,8 +1,8 @@
 import { apiClient } from '@/infrastructure/http/apiClient'
 import { AUTH_ROUTES } from '@/core/constants/authRoutes'
 import type { RegisterDto, LoginMobileDto, VerifyOtpDto, ResendOtpDto } from '@/application/dto/AuthDto'
-import type { IRequiresOtpResponse, IAuthSuccessResponse } from '@/core/interfaces/IAuth'
-import type { IUser } from '@/core/interfaces/IUser'
+import type { IRequiresOtpResponse, IAuthSuccessResponse, IMeResponse } from '@/core/interfaces/IAuth'
+
 
 export const AuthRepository = {
   async register(payload: RegisterDto): Promise<IRequiresOtpResponse> {
@@ -21,10 +21,10 @@ export const AuthRepository = {
     const { data } = await apiClient.post<IRequiresOtpResponse>(AUTH_ROUTES.RESEND_OTP, payload)
     return data
   },
-  async me(): Promise<IUser> {
-    const { data } = await apiClient.get<IUser>(AUTH_ROUTES.ME)
-    return data
-  },
+async me(): Promise<IMeResponse> {
+  const { data } = await apiClient.get<IMeResponse>(AUTH_ROUTES.ME)
+  return data
+},
   async logout(): Promise<void> {
     await apiClient.post(AUTH_ROUTES.LOGOUT)
   },

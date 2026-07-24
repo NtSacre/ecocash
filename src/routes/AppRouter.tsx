@@ -2,7 +2,7 @@ import { lazy, Suspense } from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { PublicLayout } from '@/layouts/PublicLayout'
 import { AuthLayout } from '@/layouts/AuthLayout'
-import { CitizenLayout } from '@/layouts/CitizenLayout'
+import { AppLayout } from '@/layouts/AppLayout'
 import { DashboardLayout } from '@/layouts/DashboardLayout'
 import { ProtectedRoute } from '@/guard/ProtectedRoute'
 import { GuestRoute } from '@/guard/GuestRoute'
@@ -13,21 +13,24 @@ const HomePage = lazy(() => import('@/pages/HomePage'))
 const LoginPage = lazy(() => import('@/pages/LoginPage'))
 const RegisterPage = lazy(() => import('@/pages/RegisterPage'))
 const UnauthorizedPage = lazy(() => import('@/pages/UnauthorizedPage'))
+const ProfilePage = lazy(() => import('@/pages/ProfilePage'))
 
-const CitizenHomePage = lazy(() => import('@/pages/citizen/CitizenHomePage'))
-const DiscoverPage = lazy(() => import('@/pages/citizen/DiscoverPage'))
-
-const DashboardPage = lazy(() => import('@/pages/DashboardPage'))
-
+const AppHomePage = lazy(() => import('@/pages/AppHomePage'))
 const ListingsPage = lazy(() => import('@/pages/citizen/ListingsPage'))
 const ListingDetailPage = lazy(() => import('@/pages/citizen/ListingDetailPage'))
+const DiscoverPage = lazy(() => import('@/pages/citizen/DiscoverPage'))
+
+const PartnerListingsPage = lazy(() => import('@/pages/partner/PartnerListingsPage'))
+const AgentCollectionsPage = lazy(() => import('@/pages/agent/AgentCollectionsPage'))
+
+const DashboardPage = lazy(() => import('@/pages/DashboardPage'))
+const AdminListingsPage = lazy(() => import('@/pages/admin/AdminListingsPage'))
 
 function withSuspense(element: React.ReactNode) {
   return <Suspense fallback={<div className="p-6">Chargement...</div>}>{element}</Suspense>
 }
 
 const router = createBrowserRouter([
-  // --- Public ---
   {
     element: <PublicLayout />,
     children: [
@@ -35,8 +38,6 @@ const router = createBrowserRouter([
       { path: '/unauthorized', element: withSuspense(<UnauthorizedPage />) },
     ],
   },
-
-  // --- Invité uniquement (redirige si déjà connecté) ---
   {
     element: <GuestRoute />,
     children: [
@@ -49,39 +50,47 @@ const router = createBrowserRouter([
       },
     ],
   },
-
-  // --- Authentifié : particulier (bottom nav) ---
   {
     element: <ProtectedRoute />,
     children: [
       {
-        element: <RoleGuard allowedRoles={[UserRole.Citizen]} />,
+        element: <RoleGuard allowedRoles={[UserRole.Citizen, UserRole.Partner, UserRole.Agent]} />,
         children: [
           {
-            element: <CitizenLayout />,
+            element: <AppLayout />,
             children: [
-              { path: '/app', element: withSuspense(<CitizenHomePage />) },
-              { path: '/app/decouvrir', element: withSuspense(<DiscoverPage />) },
-               { path: '/app/annonces', element: withSuspense(<ListingsPage />) },
+              { path: '/app', element: withSuspense(<AppHomePage />) },
+              { path: '/app/profil', element: withSuspense(<ProfilePage />) },
+              { path: '/app/annonces', element: withSuspense(<ListingsPage />) },
               { path: '/app/annonces/:id', element: withSuspense(<ListingDetailPage />) },
-
+              { path: '/app/decouvrir', element: withSuspense(<DiscoverPage />) },
+              {
+                element: <RoleGuard allowedRoles={[UserRole.Partner]} />,
+                children: [{ path: '/app/mes-annonces', element: withSuspense(<PartnerListingsPage />) }],
+              },
+              {
+                element: <RoleGuard allowedRoles={[UserRole.Agent]} />,
+                children: [{ path: '/app/collectes', element: withSuspense(<AgentCollectionsPage />) }],
+              },
             ],
           },
         ],
       },
     ],
   },
-
-  // --- Authentifié : partenaire / agent / admin (sidebar) ---
   {
     element: <ProtectedRoute />,
     children: [
       {
-        element: <RoleGuard allowedRoles={[UserRole.Partner, UserRole.Agent, UserRole.SuperAdmin]} />,
+        element: <RoleGuard allowedRoles={[UserRole.SuperAdmin]} />,
         children: [
           {
             element: <DashboardLayout />,
-            children: [{ path: '/dashboard', element: withSuspense(<DashboardPage />) }],
+            children: [
+              { path: '/dashboard', element: withSuspense(<DashboardPage />) },
+              { path: '/dashboard/annonces', element: withSuspense(<AdminListingsPage />) },
+            ],
+            
           },
         ],
       },

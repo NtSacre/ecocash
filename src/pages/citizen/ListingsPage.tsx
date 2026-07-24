@@ -6,6 +6,7 @@ import { EmptyState } from '@/components/EmptyState/EmptyState'
 import { Loader } from '@/components/Loader/Loader'
 import { MaterialIcon } from '@/components/Loader/MaterialIcon/MaterialIcon'
 import { TopBar } from '@/components/Loader/TopBar/TopBar'
+import { useAuthContext } from '@/context/AuthContext'
 import { useActiveListings } from '@/hooks/useActiveListings'
 import { useMyResponses } from '@/hooks/useMyResponses'
 import { formatCurrency } from '@/utils/currency'
@@ -13,8 +14,10 @@ import { remainingQuantity } from '@/utils/quantity'
 
 export default function ListingsPage() {
   const navigate = useNavigate()
+  const { user } = useAuthContext()
+
   const listingsQuery = useActiveListings()
-  const responsesQuery = useMyResponses()
+  const responsesQuery = useMyResponses(!!user)
 
   const respondedListingIds = useMemo(
     () => new Set((responsesQuery.data ?? []).map((r) => r.listing_id)),

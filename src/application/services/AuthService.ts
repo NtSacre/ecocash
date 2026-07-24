@@ -1,41 +1,41 @@
 import { AuthRepository } from '@/infrastructure/repositories/AuthRepository'
 import { TokenManager } from '@/infrastructure/storage/TokenManager'
 import type { RegisterDto, LoginMobileDto, VerifyOtpDto, ResendOtpDto } from '@/application/dto/AuthDto'
-import type { IAuthSuccessResponse } from '@/core/interfaces/IAuth'
+import type { IAuthSuccessResponse, IMeResponse } from '@/core/interfaces/IAuth'
 import type { IUser } from '@/core/interfaces/IUser'
 
-function mergeAuthSuccess(response: IAuthSuccessResponse): IUser {
-  TokenManager.setToken(response.access_token)
+// Fusionne le "user" brut avec les tableaux "roles"/"permissions" fournis
+// à côté par le backend — mêmes noms de champs, deux formes différentes.
+function mergeUserWithRoles(payload: { user: IMeResponse['user']; roles: string[]; permissions: string[] }): IUser {
   return {
-    ...response.user,
-    roles: response.roles,
-    permissions: response.permissions,
+    ...payload.user,
+    roles: payload.roles,
+    permissions: payload.permissions,
   }
 }
 
 export const AuthService = {
-  /** Étape 1 inscription : crée le compte, déclenche l'envoi d'un OTP. */
   async register(payload: RegisterDto) {
     return AuthRepository.register(payload)
   },
 
-  /** Étape 1 connexion : vérifie le téléphone, déclenche l'envoi d'un OTP. */
   async loginMobile(payload: LoginMobileDto) {
     return AuthRepository.loginMobile(payload)
   },
 
-  /** Étape 2 commune (inscription ET connexion) : valide le code, retourne le token. */
   async verifyOtp(payload: VerifyOtpDto): Promise<IUser> {
-    const response = await AuthRepository.verifyOtp(payload)
-    return mergeAuthSuccess(response)
+    const response: IAuthSuccessResponse = await AuthRepository.verifyOtp(payload)
+    TokenManager.setToken(response.access_token)
+    return mergeUserWithRoles(response)
   },
 
   async resendOtp(payload: ResendOtpDto) {
     return AuthRepository.resendOtp(payload)
   },
 
-  async fetchCurrentUser() {
-    return AuthRepository.me()
+  async fetchCurrentUser(): Promise<IUser> {
+    const response = await AuthRepository.me()
+    return mergeUserWithRoles(response)
   },
 
   async logout() {
