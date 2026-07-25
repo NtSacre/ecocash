@@ -26,6 +26,12 @@ const AgentCollectionsPage = lazy(() => import('@/pages/agent/AgentCollectionsPa
 const DashboardPage = lazy(() => import('@/pages/DashboardPage'))
 const AdminListingsPage = lazy(() => import('@/pages/admin/AdminListingsPage'))
 
+const AdminPartnersPage = lazy(() => import('@/pages/admin/AdminPartnersPage'))
+const AdminAgentsPage = lazy(() => import('@/pages/admin/AdminAgentsPage'))
+const AdminCollectionSlotsPage = lazy(() => import('@/pages/admin/AdminCollectionSlotsPage'))
+const AdminPaymentsPage = lazy(() => import('@/pages/admin/AdminPaymentsPage'))
+const AdminAssignmentsPage = lazy(() => import('@/pages/admin/AdminAssignmentsPage'))
+
 function withSuspense(element: React.ReactNode) {
   return <Suspense fallback={<div className="p-6">Chargement...</div>}>{element}</Suspense>
 }
@@ -84,14 +90,18 @@ const router = createBrowserRouter([
       {
         element: <RoleGuard allowedRoles={[UserRole.SuperAdmin]} />,
         children: [
-          {
-            element: <DashboardLayout />,
-            children: [
-              { path: '/dashboard', element: withSuspense(<DashboardPage />) },
-              { path: '/dashboard/annonces', element: withSuspense(<AdminListingsPage />) },
-            ],
-            
-          },
+         {
+  element: <DashboardLayout />,
+  children: [
+    { path: '/dashboard', element: withSuspense(<DashboardPage />) },
+    { path: '/dashboard/annonces', element: withSuspense(<AdminListingsPage />) },
+    { path: '/dashboard/partenaires', element: withSuspense(<AdminPartnersPage />) },
+    { path: '/dashboard/agents', element: withSuspense(<AdminAgentsPage />) },
+    { path: '/dashboard/creneaux', element: withSuspense(<AdminCollectionSlotsPage />) },
+    { path: '/dashboard/paiements', element: withSuspense(<AdminPaymentsPage />) },
+    { path: '/dashboard/assignations', element: withSuspense(<AdminAssignmentsPage />) },
+  ],
+},
         ],
       },
     ],
