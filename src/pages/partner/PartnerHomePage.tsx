@@ -51,6 +51,19 @@ export default function PartnerHomePage() {
             <MaterialIcon className="text-primary" name="arrow_forward" />
           </button>
         </section>
+        <section className="flex items-center justify-between rounded-lg bg-tertiary-container/20 p-5">
+  <div>
+    <p className="font-headline text-base font-bold text-on-surface">Mes produits</p>
+    <p className="text-xs text-on-surface-variant">Produits recyclés à mettre en avant</p>
+  </div>
+  <button
+    className="rounded-full bg-white p-3 shadow-sm transition-transform active:scale-90"
+    onClick={() => navigate('/app/mes-produits')}
+    type="button"
+  >
+    <MaterialIcon className="text-primary" name="arrow_forward" />
+  </button>
+</section>
       </main>
     </div>
   )

@@ -7,4 +7,7 @@ export const ResponseService = {
   async respond(listingId: number | string, quantityOffered: number) {
     return ResponseRepository.create(listingId, quantityOffered)
   },
+  async selectSlot(responseId: number, collectionSlotId: number) {
+    return ResponseRepository.selectSlot(responseId, collectionSlotId)
+  },
 }

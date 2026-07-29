@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom'
 import type { ReactNode } from 'react'
 import { MaterialIcon } from '@/components/Loader/MaterialIcon/MaterialIcon'
 
@@ -11,7 +12,7 @@ interface ModalProps {
 export function Modal({ isOpen, onClose, title, children }: ModalProps) {
   if (!isOpen) return null
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
       <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-lg bg-white p-6 shadow-xl">
         <div className="mb-4 flex items-center justify-between">
@@ -22,6 +23,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
         </div>
         {children}
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }

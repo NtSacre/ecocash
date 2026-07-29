@@ -94,9 +94,9 @@ export default function ListingDetailPage() {
             <p className="text-sm text-on-surface-variant">
               Vous pourrez choisir un créneau de collecte depuis votre suivi.
             </p>
-            <button className="font-semibold text-primary" onClick={() => navigate('/app/annonces')} type="button">
-              Retour aux annonces
-            </button>
+            <button className="font-semibold text-primary" onClick={() => navigate('/app/suivi')} type="button">
+  Aller au suivi
+</button>
           </section>
         )}
 

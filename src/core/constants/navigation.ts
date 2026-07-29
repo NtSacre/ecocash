@@ -4,6 +4,7 @@ import { UserRole } from '@/core/enums/UserRole'
 const CITIZEN_NAV_ITEMS: BottomNavItem[] = [
   { to: '/app', label: 'Accueil', icon: 'home', filled: true, end: true },
   { to: '/app/annonces', label: 'Vendre', icon: 'add_circle' },
+  { to: '/app/suivi', label: 'Suivi', icon: 'receipt_long' },
   { to: '/app/decouvrir', label: 'Découvrir', icon: 'menu_book' },
   { to: '/app/profil', label: 'Compte', icon: 'person' },
 ]
@@ -11,6 +12,7 @@ const CITIZEN_NAV_ITEMS: BottomNavItem[] = [
 const PARTNER_NAV_ITEMS: BottomNavItem[] = [
   { to: '/app', label: 'Accueil', icon: 'home', filled: true, end: true },
   { to: '/app/mes-annonces', label: 'Annonces', icon: 'campaign' },
+  { to: '/app/suivi', label: 'Suivi', icon: 'receipt_long' },
   { to: '/app/decouvrir', label: 'Découvrir', icon: 'menu_book' },
   { to: '/app/profil', label: 'Compte', icon: 'person' },
 ]
@@ -19,6 +21,7 @@ const AGENT_NAV_ITEMS: BottomNavItem[] = [
   { to: '/app', label: 'Accueil', icon: 'home', filled: true, end: true },
   { to: '/app/collectes', label: 'Collectes', icon: 'local_shipping' },
   { to: '/app/annonces', label: 'Vendre', icon: 'add_circle' },
+  { to: '/app/suivi', label: 'Suivi', icon: 'receipt_long' },
   { to: '/app/profil', label: 'Compte', icon: 'person' },
 ]
 

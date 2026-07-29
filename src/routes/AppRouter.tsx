@@ -31,6 +31,9 @@ const AdminAgentsPage = lazy(() => import('@/pages/admin/AdminAgentsPage'))
 const AdminCollectionSlotsPage = lazy(() => import('@/pages/admin/AdminCollectionSlotsPage'))
 const AdminPaymentsPage = lazy(() => import('@/pages/admin/AdminPaymentsPage'))
 const AdminAssignmentsPage = lazy(() => import('@/pages/admin/AdminAssignmentsPage'))
+const TrackingPage = lazy(() => import('@/pages/citizen/TrackingPage'))
+const SlotSelectionPage = lazy(() => import('@/pages/citizen/SlotSelectionPage'))
+const PartnerProductsPage = lazy(() => import('@/pages/partner/PartnerProductsPage'))
 
 function withSuspense(element: React.ReactNode) {
   return <Suspense fallback={<div className="p-6">Chargement...</div>}>{element}</Suspense>
@@ -68,11 +71,16 @@ const router = createBrowserRouter([
               { path: '/app', element: withSuspense(<AppHomePage />) },
               { path: '/app/profil', element: withSuspense(<ProfilePage />) },
               { path: '/app/annonces', element: withSuspense(<ListingsPage />) },
+              { path: '/app/suivi', element: withSuspense(<TrackingPage />) },
+              { path: '/app/reponses/:responseId/creneau', element: withSuspense(<SlotSelectionPage />) },
               { path: '/app/annonces/:id', element: withSuspense(<ListingDetailPage />) },
               { path: '/app/decouvrir', element: withSuspense(<DiscoverPage />) },
               {
                 element: <RoleGuard allowedRoles={[UserRole.Partner]} />,
-                children: [{ path: '/app/mes-annonces', element: withSuspense(<PartnerListingsPage />) }],
+                children: [
+                  { path: '/app/mes-annonces', element: withSuspense(<PartnerListingsPage />) },
+                  { path: '/app/mes-produits', element: withSuspense(<PartnerProductsPage />) },
+                ],
               },
               {
                 element: <RoleGuard allowedRoles={[UserRole.Agent]} />,

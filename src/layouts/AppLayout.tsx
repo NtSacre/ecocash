@@ -9,7 +9,7 @@ export function AppLayout() {
   const navItems = getNavItemsForRole(user ? getPrimaryRole(user) : null)
 
   return (
-    <div className="min-h-screen pb-32 text-on-surface">
+    <div className="min-h-screen pb-24 text-on-surface">
       <Outlet />
       <BottomNav items={navItems} />
     </div>
