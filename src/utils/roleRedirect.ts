@@ -6,7 +6,7 @@ export function getHomeRouteForUser(user: IUser): string {
   const role = getPrimaryRole(user)
 
   if (role === UserRole.SuperAdmin) return '/dashboard'
-  if (role === UserRole.Citizen || role === UserRole.Partner || role === UserRole.Agent) return '/app'
+  if (role === UserRole.Citizen || role === UserRole.Partner || role === UserRole.Agent) return '/'
 
   return '/'
 }

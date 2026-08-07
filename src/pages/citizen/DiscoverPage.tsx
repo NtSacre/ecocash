@@ -25,7 +25,7 @@ export default function DiscoverPage() {
       <TopBar
         leftIcon="arrow_back"
         leftLabel="Retour"
-        onLeftClick={() => navigate('/app')}
+        onLeftClick={() => navigate('/')}
         title="Découvrir"
       />
 
@@ -44,7 +44,9 @@ export default function DiscoverPage() {
           <button
             className={[
               'flex-1 rounded-full py-3 text-sm font-bold transition-colors',
-              activeTab === 'products' ? 'bg-white text-primary shadow-sm' : 'text-on-surface-variant',
+              activeTab === 'products'
+                ? 'bg-white text-primary shadow-sm'
+                : 'text-on-surface-variant',
             ].join(' ')}
             onClick={() => setActiveTab('products')}
             type="button"
@@ -77,7 +79,9 @@ export default function DiscoverPage() {
               <Card
                 key={post.id}
                 description={truncate(post.content, 120)}
-                imageFallbackIcon={<MaterialIcon className="text-4xl text-on-surface-variant/40" name="menu_book" />}
+                imageFallbackIcon={
+                  <MaterialIcon className="text-4xl text-on-surface-variant/40" name="menu_book" />
+                }
                 imageUrl={post.image_path}
                 subtitle={post.partner.partner_profile?.company_name ?? post.partner.name}
                 title={post.title}
@@ -115,7 +119,12 @@ export default function DiscoverPage() {
                     {formatCurrency(product.price)}
                   </span>
                 }
-                imageFallbackIcon={<MaterialIcon className="text-4xl text-on-surface-variant/40" name="inventory_2" />}
+                imageFallbackIcon={
+                  <MaterialIcon
+                    className="text-4xl text-on-surface-variant/40"
+                    name="inventory_2"
+                  />
+                }
                 imageUrl={product.image_path}
                 subtitle={product.partner.partner_profile?.company_name ?? product.partner.name}
                 title={product.name}

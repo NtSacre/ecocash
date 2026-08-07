@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { EmptyState } from '@/components/EmptyState/EmptyState'
 import { TopBar } from '@/components/Loader/TopBar/TopBar'
 
-export default function AgentCollectionsPage() {
+export default function AppHelpPage() {
   const navigate = useNavigate()
 
   return (
@@ -11,13 +11,13 @@ export default function AgentCollectionsPage() {
         leftIcon="arrow_back"
         leftLabel="Retour"
         onLeftClick={() => navigate('/')}
-        title="Mes collectes"
+        title="Aide"
       />
       <main className="mx-auto max-w-screen-xl px-6 pt-24">
         <EmptyState
-          description="Le suivi terrain arrive bientôt."
-          icon="construction"
-          title="En cours de construction"
+          description="Le centre d'aide arrive bientôt."
+          icon="help_outline"
+          title="En cours de préparation"
         />
       </main>
     </div>

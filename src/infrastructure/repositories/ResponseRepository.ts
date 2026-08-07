@@ -13,10 +13,11 @@ export const ResponseRepository = {
     })
     return data
   },
-  async selectSlot(responseId: number, collectionSlotId: number): Promise<IListingResponse> {
-    const { data } = await apiClient.post<IListingResponse>(`/responses/${responseId}/select-slot`, {
-      collection_slot_id: collectionSlotId,
-    })
-    return data
-  },
+  async selectSlot(responseId: number, collectionSlotId: number, collectionDate: string): Promise<IListingResponse> {
+  const { data } = await apiClient.post<IListingResponse>(`/responses/${responseId}/select-slot`, {
+    collection_slot_id: collectionSlotId,
+    collection_date: collectionDate,
+  })
+  return data
+},
 }

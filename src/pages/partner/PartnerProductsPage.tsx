@@ -1,4 +1,4 @@
-import { useState,  useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -10,7 +10,10 @@ import { Card } from '@/components/Card/Card'
 import { MaterialIcon } from '@/components/Loader/MaterialIcon/MaterialIcon'
 import { usePartnerProducts } from '@/hooks/usePartnerProducts'
 import { useCreateProduct } from '@/hooks/useCreateProduct'
-import { partnerProductFormSchema, type PartnerProductFormValues } from '@/application/validators/partnerProductValidators'
+import {
+  partnerProductFormSchema,
+  type PartnerProductFormValues,
+} from '@/application/validators/partnerProductValidators'
 import { formatCurrency } from '@/utils/currency'
 
 import { useUpdateProduct } from '@/hooks/useUpdateProduct'
@@ -25,68 +28,75 @@ export default function PartnerProductsPage() {
   const productsQuery = usePartnerProducts()
   const createProduct = useCreateProduct()
   const updateProduct = useUpdateProduct()
-const deleteProduct = useDeleteProduct()
+  const deleteProduct = useDeleteProduct()
 
-  const form = useForm<PartnerProductFormValues>({ resolver: zodResolver(partnerProductFormSchema) })
+  const form = useForm<PartnerProductFormValues>({
+    resolver: zodResolver(partnerProductFormSchema),
+  })
 
   useEffect(() => {
-  if (editingProduct) {
-    form.reset({
-      name: editingProduct.name,
-      description: editingProduct.description ?? '',
-      price: editingProduct.price ? Number(editingProduct.price) : undefined,
-      image_path: editingProduct.image_path ?? '',
-    })
-  } else {
-    form.reset({
-      name: '',
-      description: '',
-      price: undefined,
-      image_path: '',
-    })
-  }
-}, [editingProduct])
-
-const onSubmit = form.handleSubmit(async (values) => {
-  try {
-    const payload = {
-      ...values,
-      image_path: values.image_path || undefined,
-    }
-
     if (editingProduct) {
-      await updateProduct.mutateAsync({
-        id: editingProduct.id,
-        payload,
+      form.reset({
+        name: editingProduct.name,
+        description: editingProduct.description ?? '',
+        price: editingProduct.price ? Number(editingProduct.price) : undefined,
+        image_path: editingProduct.image_path ?? '',
       })
     } else {
-      await createProduct.mutateAsync(payload)
+      form.reset({
+        name: '',
+        description: '',
+        price: undefined,
+        image_path: '',
+      })
     }
+  }, [editingProduct])
 
-    form.reset()
+  const onSubmit = form.handleSubmit(async (values) => {
+    try {
+      const payload = {
+        ...values,
+        image_path: values.image_path || undefined,
+      }
 
-    setEditingProduct(null)
+      if (editingProduct) {
+        await updateProduct.mutateAsync({
+          id: editingProduct.id,
+          payload,
+        })
+      } else {
+        await createProduct.mutateAsync(payload)
+      }
 
-    setIsModalOpen(false)
-  } catch {
-    //
+      form.reset()
+
+      setEditingProduct(null)
+
+      setIsModalOpen(false)
+    } catch {
+      //
+    }
+  })
+
+  function handleEdit(product: IProduct) {
+    setEditingProduct(product)
+    setIsModalOpen(true)
   }
-})
 
-function handleEdit(product: IProduct) {
-  setEditingProduct(product)
-  setIsModalOpen(true)
-}
+  async function handleDelete(product: IProduct) {
+    if (!confirm(`Supprimer "${product.name}" ?`)) return
 
-async function handleDelete(product: IProduct) {
-  if (!confirm(`Supprimer "${product.name}" ?`)) return
-
-  await deleteProduct.mutateAsync(product.id)
-}
+    await deleteProduct.mutateAsync(product.id)
+  }
 
   return (
     <div className="text-on-surface">
-      <TopBar leftIcon="arrow_back" leftLabel="Retour" onLeftClick={() => navigate('/app')} title="Mes produits" />
+      <TopBar
+        leftIcon="arrow_back"
+        leftLabel="Retour"
+        onLeftClick={() => navigate('/')}
+        title="Mes produits"
+      />
 
       <main className="mx-auto max-w-screen-7xl space-y-6 px-6 pb-12 pt-24">
         <button
@@ -100,7 +110,11 @@ async function handleDelete(product: IProduct) {
         {productsQuery.isLoading && <Loader label="Chargement..." />}
 
         {productsQuery.data?.length === 0 && (
-          <EmptyState description="Ajoutez vos produits recyclés ou réutilisables pour leur donner de la visibilité." icon="inventory_2" title="Aucun produit" />
+          <EmptyState
+            description="Ajoutez vos produits recyclés ou réutilisables pour leur donner de la visibilité."
+            icon="inventory_2"
+            title="Aucun produit"
+          />
         )}
 
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
@@ -108,36 +122,34 @@ async function handleDelete(product: IProduct) {
             <Card
               key={product.id}
               description={product.description ?? undefined}
-             footer={
-  <div className="space-y-3">
+              footer={
+                <div className="space-y-3">
+                  <span className="block font-headline text-lg font-extrabold text-primary">
+                    {formatCurrency(product.price)}
+                  </span>
 
-    <span className="block font-headline text-lg font-extrabold text-primary">
-      {formatCurrency(product.price)}
-    </span>
+                  <div className="flex gap-2">
+                    <button
+                      className="flex-1 rounded-lg bg-primary px-3 py-2 text-white"
+                      onClick={() => handleEdit(product)}
+                      type="button"
+                    >
+                      Modifier
+                    </button>
 
-    <div className="flex gap-2">
-
-      <button
-        className="flex-1 rounded-lg bg-primary px-3 py-2 text-white"
-        onClick={() => handleEdit(product)}
-        type="button"
-      >
-        Modifier
-      </button>
-
-      <button
-        className="flex-1 rounded-lg bg-error px-3 py-2 text-white"
-        onClick={() => handleDelete(product)}
-        type="button"
-      >
-        Supprimer
-      </button>
-
-    </div>
-
-  </div>
-}
-              imageFallbackIcon={<MaterialIcon className="text-4xl text-on-surface-variant/40" name="inventory_2" />}
+                    <button
+                      className="flex-1 rounded-lg bg-error px-3 py-2 text-white"
+                      onClick={() => handleDelete(product)}
+                      type="button"
+                    >
+                      Supprimer
+                    </button>
+                  </div>
+                </div>
+              }
+              imageFallbackIcon={
+                <MaterialIcon className="text-4xl text-on-surface-variant/40" name="inventory_2" />
+              }
               imageUrl={product.image_path}
               subtitle={product.is_available ? 'Disponible' : 'Indisponible'}
               title={product.name}
@@ -146,24 +158,34 @@ async function handleDelete(product: IProduct) {
         </div>
       </main>
 
-      <Modal isOpen={isModalOpen} onClose={() => {
-  setIsModalOpen(false)
-  setEditingProduct(null)
-  form.reset()
-}} title={editingProduct ? 'Modifier le produit' : 'Ajouter un produit'}>
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false)
+          setEditingProduct(null)
+          form.reset()
+        }}
+        title={editingProduct ? 'Modifier le produit' : 'Ajouter un produit'}
+      >
         <form className="space-y-4" onSubmit={onSubmit}>
           <div>
-            <label className="ml-1 text-xs font-bold uppercase tracking-widest text-zinc-400">Nom</label>
+            <label className="ml-1 text-xs font-bold uppercase tracking-widest text-zinc-400">
+              Nom
+            </label>
             <input
               className="mt-2 w-full rounded-lg bg-surface-container-high px-4 py-3 font-medium text-on-surface focus:ring-2 focus:ring-primary/40"
               type="text"
               {...form.register('name')}
             />
-            {form.formState.errors.name && <p className="mt-1 text-xs text-error">{form.formState.errors.name.message}</p>}
+            {form.formState.errors.name && (
+              <p className="mt-1 text-xs text-error">{form.formState.errors.name.message}</p>
+            )}
           </div>
 
           <div>
-            <label className="ml-1 text-xs font-bold uppercase tracking-widest text-zinc-400">Description</label>
+            <label className="ml-1 text-xs font-bold uppercase tracking-widest text-zinc-400">
+              Description
+            </label>
             <textarea
               className="mt-2 w-full rounded-lg bg-surface-container-high px-4 py-3 font-medium text-on-surface focus:ring-2 focus:ring-primary/40"
               rows={2}
@@ -172,7 +194,9 @@ async function handleDelete(product: IProduct) {
           </div>
 
           <div>
-            <label className="ml-1 text-xs font-bold uppercase tracking-widest text-zinc-400">Prix (optionnel)</label>
+            <label className="ml-1 text-xs font-bold uppercase tracking-widest text-zinc-400">
+              Prix (optionnel)
+            </label>
             <input
               className="mt-2 w-full rounded-lg bg-surface-container-high px-4 py-3 font-medium text-on-surface focus:ring-2 focus:ring-primary/40"
               step="0.01"
@@ -182,14 +206,18 @@ async function handleDelete(product: IProduct) {
           </div>
 
           <div>
-            <label className="ml-1 text-xs font-bold uppercase tracking-widest text-zinc-400">URL image (optionnel)</label>
+            <label className="ml-1 text-xs font-bold uppercase tracking-widest text-zinc-400">
+              URL image (optionnel)
+            </label>
             <input
               className="mt-2 w-full rounded-lg bg-surface-container-high px-4 py-3 font-medium text-on-surface focus:ring-2 focus:ring-primary/40"
               placeholder="https://..."
               type="text"
               {...form.register('image_path')}
             />
-            {form.formState.errors.image_path && <p className="mt-1 text-xs text-error">{form.formState.errors.image_path.message}</p>}
+            {form.formState.errors.image_path && (
+              <p className="mt-1 text-xs text-error">{form.formState.errors.image_path.message}</p>
+            )}
           </div>
 
           {createProduct.isError && (
@@ -199,18 +227,18 @@ async function handleDelete(product: IProduct) {
           )}
 
           <button
-  className="w-full rounded-lg bg-primary py-3 font-headline font-bold text-on-primary disabled:opacity-60"
-  disabled={createProduct.isPending || updateProduct.isPending}
-  type="submit"
->
-  {editingProduct
-    ? updateProduct.isPending
-      ? 'Modification...'
-      : 'Modifier'
-    : createProduct.isPending
-      ? 'Ajout...'
-      : 'Ajouter'}
-</button>
+            className="w-full rounded-lg bg-primary py-3 font-headline font-bold text-on-primary disabled:opacity-60"
+            disabled={createProduct.isPending || updateProduct.isPending}
+            type="submit"
+          >
+            {editingProduct
+              ? updateProduct.isPending
+                ? 'Modification...'
+                : 'Modifier'
+              : createProduct.isPending
+                ? 'Ajout...'
+                : 'Ajouter'}
+          </button>
         </form>
       </Modal>
     </div>

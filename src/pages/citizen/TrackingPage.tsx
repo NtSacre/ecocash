@@ -7,11 +7,28 @@ import { useMyResponses } from '@/hooks/useMyResponses'
 import { useAuthContext } from '@/context/AuthContext'
 import { RESPONSE_STATUS_LABEL, RESPONSE_STATUS_TONE } from '@/core/constants/responseStatus'
 import { formatCurrency } from '@/utils/currency'
+import { useState } from 'react'
+import { SlotPickerModal } from '@/components/SlotPickerModal/SlotPickerModal'
+import { useSelectSlot } from '@/hooks/useSelectSlot'
+import { formatDateLabel } from '@/utils/weekday'
 
 export default function TrackingPage() {
   const navigate = useNavigate()
   const { user } = useAuthContext()
   const responsesQuery = useMyResponses(!!user)
+
+  const [activeResponseId, setActiveResponseId] = useState<number | null>(null)
+const selectSlot = useSelectSlot()
+
+const handleSlotSelect = async (slotId: number, date: string) => {
+  if (!activeResponseId) return
+  try {
+    await selectSlot.mutateAsync({ responseId: activeResponseId, slotId, date })
+    setActiveResponseId(null)
+  } catch {
+    // erreur silencieuse, modal reste ouvert pour réessayer
+  }
+}
 
   return (
     <div className="text-on-surface">
@@ -40,21 +57,21 @@ export default function TrackingPage() {
               <Badge label={RESPONSE_STATUS_LABEL[response.status]} tone={RESPONSE_STATUS_TONE[response.status]} />
             </div>
 
-            {response.status === 'pending' && (
-              <button
-                className="w-full rounded-full bg-primary py-3 text-sm font-bold text-on-primary transition-transform active:scale-[0.98]"
-                onClick={() => navigate(`/app/reponses/${response.id}/creneau`)}
-                type="button"
-              >
-                Choisir un créneau
-              </button>
-            )}
+           {response.status === 'pending' && (
+  <button
+    className="w-full rounded-full bg-primary py-3 text-sm font-bold text-on-primary transition-transform active:scale-[0.98]"
+    onClick={() => setActiveResponseId(response.id)}
+    type="button"
+  >
+    Choisir un créneau
+  </button>
+)}
 
-            {response.status === 'slot_selected' && response.slot && (
-              <p className="text-sm text-on-surface-variant">
-                Créneau : {response.slot.label} · {response.slot.date}
-              </p>
-            )}
+            {response.status === 'slot_selected' && response.slot && response.collection_date && (
+  <p className="text-sm capitalize text-on-surface-variant">
+    Rendez-vous : {formatDateLabel(response.collection_date)} · {response.slot.start_time.slice(0, 5)}-{response.slot.end_time.slice(0, 5)}
+  </p>
+)}
 
             {response.payment && (
               <p className="text-sm font-bold text-primary">
@@ -63,6 +80,13 @@ export default function TrackingPage() {
             )}
           </article>
         ))}
+
+        <SlotPickerModal
+  isOpen={activeResponseId !== null}
+  isSubmitting={selectSlot.isPending}
+  onClose={() => setActiveResponseId(null)}
+  onSelect={handleSlotSelect}
+/>
       </main>
     </div>
   )

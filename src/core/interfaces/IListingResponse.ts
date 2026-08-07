@@ -33,6 +33,7 @@ export interface IListingResponse {
   status: ListingResponseStatus
   listing: IListing
   slot: ICollectionSlot | null
+  collection_date: string | null
   collection: ICollectionSummary | null
   payment: IPaymentSummary | null
   created_at: string

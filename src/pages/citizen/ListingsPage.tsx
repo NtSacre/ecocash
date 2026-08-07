@@ -26,7 +26,12 @@ export default function ListingsPage() {
 
   return (
     <div className="text-on-surface">
-      <TopBar leftIcon="arrow_back" leftLabel="Retour" onLeftClick={() => navigate('/app')} title="Annonces" />
+      <TopBar
+        leftIcon="arrow_back"
+        leftLabel="Retour"
+        onLeftClick={() => navigate('/')}
+        title="Annonces"
+      />
 
       <main className="mx-auto max-w-screen-xl space-y-6 px-6 pb-12 pt-24">
         {listingsQuery.isLoading && <Loader label="Chargement des annonces..." />}
@@ -62,7 +67,9 @@ export default function ListingsPage() {
                     {formatCurrency(listing.unit_price)} / {listing.material.unit}
                   </span>
                 }
-                imageFallbackIcon={<MaterialIcon className="text-4xl text-on-surface-variant/40" name="recycling" />}
+                imageFallbackIcon={
+                  <MaterialIcon className="text-4xl text-on-surface-variant/40" name="recycling" />
+                }
                 onClick={() => navigate(`/app/annonces/${listing.id}`)}
                 subtitle={listing.partner.partner_profile?.company_name ?? listing.partner.name}
                 title={listing.material.name}

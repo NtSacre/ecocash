@@ -12,6 +12,8 @@ import { useRespondToListing } from '@/hooks/useRespondToListing'
 import { createRespondSchema, type RespondFormValues } from '@/application/validators/listingValidators'
 import { formatCurrency } from '@/utils/currency'
 import { remainingQuantity, toNumber } from '@/utils/quantity'
+import { SlotPickerModal } from '@/components/SlotPickerModal/SlotPickerModal'
+import { useSelectSlot } from '@/hooks/useSelectSlot'
 
 export default function ListingDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -28,20 +30,36 @@ export default function ListingDetailPage() {
   const min = listing ? toNumber(listing.min_quantity_per_response) : 0
   const isOwnListing = !!(user && listing && user.id === listing.partner.id)
 
+  const [createdResponseId, setCreatedResponseId] = useState<number | null>(null)
+const [isSlotPickerOpen, setIsSlotPickerOpen] = useState(false)
+const selectSlot = useSelectSlot()
+
   const form = useForm<RespondFormValues>({
     resolver: zodResolver(createRespondSchema(min, remaining)),
     defaultValues: { quantity_offered: min },
   })
 
-  const onSubmit = form.handleSubmit(async (values) => {
-    try {
-      await respondMutation.mutateAsync(values.quantity_offered)
-      setSuccess(true)
-      setIsResponding(false)
-    } catch {
-      // erreur affichée via respondMutation.isError
-    }
-  })
+const onSubmit = form.handleSubmit(async (values) => {
+  try {
+    const response = await respondMutation.mutateAsync(values.quantity_offered)
+    setCreatedResponseId(response.id)
+    setIsResponding(false)
+    setIsSlotPickerOpen(true)
+  } catch {
+    // erreur affichée via respondMutation.isError
+  }
+})
+
+const handleSlotSelect = async (slotId: number, date: string) => {
+  if (!createdResponseId) return
+  try {
+    await selectSlot.mutateAsync({ responseId: createdResponseId, slotId, date })
+    setIsSlotPickerOpen(false)
+    setSuccess(true)
+  } catch {
+    // erreur affichée via selectSlot.isError, modal reste ouvert
+  }
+}
 
   if (listingQuery.isLoading) return <Loader label="Chargement de l'annonce..." />
 
@@ -180,7 +198,19 @@ export default function ListingDetailPage() {
             </div>
           </form>
         )}
+         <SlotPickerModal
+  isOpen={isSlotPickerOpen}
+  isSubmitting={selectSlot.isPending}
+  onClose={() => {
+    // La réponse existe déjà même si l'utilisateur ferme sans choisir —
+    // il pourra choisir plus tard depuis Suivi.
+    setIsSlotPickerOpen(false)
+    setSuccess(true)
+  }}
+  onSelect={handleSlotSelect}
+/>
       </main>
+     
     </div>
   )
 }
