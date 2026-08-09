@@ -6,6 +6,7 @@ export const createAgentSchema = z.object({
   phone: z.string().min(7, 'Numéro invalide'),
   preferred_otp_channel: z.enum(['email', 'sms', 'whatsapp']).optional(),
   coverage_zone: z.string().optional(),
+  status: z.enum(['active', 'suspended']).optional(),
 })
 
 export type CreateAgentFormValues = z.infer<typeof createAgentSchema>

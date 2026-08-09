@@ -1,36 +1,53 @@
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader } from '@/components/Loader/Loader'
 import { Modal } from '@/components/Modal/Modal'
 import { Table, type TableColumn } from '@/components/Table/Table'
+import { AdminAgentForm } from '@/components/AdminAgentForm/AdminAgentForm'
 import { useAdminAgents } from '@/hooks/useAdminAgents'
-import { useCreateAgent } from '@/hooks/useCreateAgent'
-import { createAgentSchema, type CreateAgentFormValues } from '@/application/validators/adminAgentValidators'
+import { useAdminAgentMutations } from '@/hooks/useAdminAgentMutations'
 import type { IUser } from '@/core/interfaces/IUser'
+import type { CreateAgentFormValues } from '@/application/validators/adminAgentValidators'
 
 export default function AdminAgentsPage() {
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [formModal, setFormModal] = useState<'create' | IUser | null>(null)
+
   const agentsQuery = useAdminAgents()
-  const createAgent = useCreateAgent()
+  const { create, update, remove } = useAdminAgentMutations()
 
-  const form = useForm<CreateAgentFormValues>({ resolver: zodResolver(createAgentSchema) })
-
-  const onSubmit = form.handleSubmit(async (values) => {
-    try {
-      await createAgent.mutateAsync({ ...values, email: values.email || undefined })
-      form.reset()
-      setIsModalOpen(false)
-    } catch {
-      // erreur affichée via createAgent.isError
+  const handleSubmit = async (values: CreateAgentFormValues) => {
+    if (formModal === 'create') {
+      await create.mutateAsync(values)
+    } else if (formModal) {
+      await update.mutateAsync({ id: formModal.id, payload: values })
     }
-  })
+    setFormModal(null)
+  }
 
   const columns: TableColumn<IUser>[] = [
     { header: 'Nom', render: (a) => a.name },
     { header: 'Téléphone', render: (a) => a.phone },
     { header: 'Email', render: (a) => a.email ?? '—' },
     { header: 'Zone', render: (a) => a.coverage_zone ?? '—' },
+    {
+      header: 'Actions',
+      render: (a) => (
+        <div className="flex gap-3">
+          <button className="font-semibold text-primary" onClick={() => setFormModal(a)} type="button">
+            Éditer
+          </button>
+          <button
+            className="font-semibold text-error"
+            disabled={remove.isPending}
+            onClick={() => {
+              if (confirm(`Supprimer ${a.name} ?`)) remove.mutate(a.id)
+            }}
+            type="button"
+          >
+            Supprimer
+          </button>
+        </div>
+      ),
+    },
   ]
 
   return (
@@ -39,7 +56,7 @@ export default function AdminAgentsPage() {
         <h1 className="font-headline text-2xl font-bold text-on-surface">Agents</h1>
         <button
           className="rounded-lg bg-primary px-5 py-3 font-headline font-bold text-on-primary"
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => setFormModal('create')}
           type="button"
         >
           + Créer un agent
@@ -50,61 +67,23 @@ export default function AdminAgentsPage() {
 
       {agentsQuery.data && <Table columns={columns} data={agentsQuery.data} rowKey={(a) => a.id} />}
 
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Créer un agent">
-        <form className="space-y-4" onSubmit={onSubmit}>
-          <div>
-            <label className="ml-1 text-xs font-bold uppercase tracking-widest text-zinc-400">Nom complet</label>
-            <input
-              className="mt-2 w-full rounded-lg bg-surface-container-high px-4 py-3 font-medium text-on-surface focus:ring-2 focus:ring-primary/40"
-              type="text"
-              {...form.register('name')}
-            />
-            {form.formState.errors.name && <p className="mt-1 text-xs text-error">{form.formState.errors.name.message}</p>}
-          </div>
+      {remove.isError && (
+        <p className="rounded-2xl bg-error-container px-4 py-3 text-sm text-on-error-container">
+          Impossible de supprimer — cet agent a des collectes actives. Réassignez-les d'abord depuis Assignations.
+        </p>
+      )}
 
-          <div>
-            <label className="ml-1 text-xs font-bold uppercase tracking-widest text-zinc-400">Téléphone</label>
-            <input
-              className="mt-2 w-full rounded-lg bg-surface-container-high px-4 py-3 font-medium text-on-surface focus:ring-2 focus:ring-primary/40"
-              placeholder="+221770000000"
-              type="tel"
-              {...form.register('phone')}
-            />
-            {form.formState.errors.phone && <p className="mt-1 text-xs text-error">{form.formState.errors.phone.message}</p>}
-          </div>
-
-          <div>
-            <label className="ml-1 text-xs font-bold uppercase tracking-widest text-zinc-400">Email (optionnel)</label>
-            <input
-              className="mt-2 w-full rounded-lg bg-surface-container-high px-4 py-3 font-medium text-on-surface focus:ring-2 focus:ring-primary/40"
-              type="email"
-              {...form.register('email')}
-            />
-          </div>
-          <div>
-  <label className="ml-1 text-xs font-bold uppercase tracking-widest text-zinc-400">Zone de couverture (optionnel)</label>
-  <input
-    className="mt-2 w-full rounded-lg bg-surface-container-high px-4 py-3 font-medium text-on-surface focus:ring-2 focus:ring-primary/40"
-    placeholder="Ex: Dakar Plateau"
-    type="text"
-    {...form.register('coverage_zone')}
-  />
-</div>
-
-          {createAgent.isError && (
-            <p className="rounded-2xl bg-error-container px-4 py-3 text-sm text-on-error-container">
-              Ce téléphone ou cet email est déjà utilisé.
-            </p>
-          )}
-
-          <button
-            className="w-full rounded-lg bg-primary py-3 font-headline font-bold text-on-primary disabled:opacity-60"
-            disabled={createAgent.isPending}
-            type="submit"
-          >
-            {createAgent.isPending ? 'Création...' : 'Créer'}
-          </button>
-        </form>
+      <Modal isOpen={formModal !== null} onClose={() => setFormModal(null)} title={formModal === 'create' ? 'Créer un agent' : "Éditer l'agent"}>
+        {(create.isError || update.isError) && (
+          <p className="mb-4 rounded-2xl bg-error-container px-4 py-3 text-sm text-on-error-container">
+            Ce téléphone ou cet email est déjà utilisé.
+          </p>
+        )}
+        <AdminAgentForm
+          initialValues={formModal !== 'create' ? (formModal ?? undefined) : undefined}
+          isSubmitting={create.isPending || update.isPending}
+          onSubmit={handleSubmit}
+        />
       </Modal>
     </div>
   )

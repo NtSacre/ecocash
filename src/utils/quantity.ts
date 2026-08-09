@@ -7,3 +7,7 @@ export function toNumber(value: string | number | null | undefined): number {
 export function remainingQuantity(listing: { target_quantity: string; reserved_quantity: string }): number {
   return Math.max(0, toNumber(listing.target_quantity) - toNumber(listing.reserved_quantity))
 }
+
+export function formatQuantity(value: number): string {
+  return new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 1 }).format(value)
+}

@@ -11,4 +11,11 @@ export const AdminAgentRepository = {
     const { data } = await apiClient.post<IUser>('/admin/agents', payload)
     return data
   },
+  async update(id: number, payload: Partial<CreateAgentDto> & { status?: string }): Promise<IUser> {
+    const { data } = await apiClient.put<IUser>(`/admin/agents/${id}`, payload)
+    return data
+  },
+  async remove(id: number): Promise<void> {
+    await apiClient.delete(`/admin/agents/${id}`)
+  },
 }

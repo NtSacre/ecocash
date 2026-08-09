@@ -32,6 +32,9 @@ export function getNextOccurrences(dayOfWeek: number, count = 4): string[] {
 }
 
 export function formatDateLabel(isoDate: string): string {
-  const date = new Date(`${isoDate}T00:00:00`)
+  // Gère les deux formats possibles : "2026-08-10" (date simple)
+  // ou "2026-08-10T00:00:00.000000Z" (datetime complet renvoyé si le
+  // backend caste collection_date en Carbon).
+  const date = isoDate.includes('T') ? new Date(isoDate) : new Date(`${isoDate}T00:00:00`)
   return date.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
 }

@@ -8,6 +8,7 @@ export const createPartnerSchema = z.object({
   company_name: z.string().min(2, 'Le nom de la société est requis'),
   description: z.string().optional(),
   address: z.string().optional(),
+  status: z.enum(['active', 'pending', 'suspended']).optional(),
 })
 
 export type CreatePartnerFormValues = z.infer<typeof createPartnerSchema>

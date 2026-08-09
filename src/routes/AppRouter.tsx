@@ -21,6 +21,7 @@ const ListingDetailPage = lazy(() => import('@/pages/citizen/ListingDetailPage')
 const DiscoverPage = lazy(() => import('@/pages/citizen/DiscoverPage'))
 
 const PartnerListingsPage = lazy(() => import('@/pages/partner/PartnerListingsPage'))
+const PartnerEducationalPostsPage = lazy(() => import('@/pages/partner/PartnerEducationalPostsPage'))
 const AgentCollectionsPage = lazy(() => import('@/pages/agent/AgentCollectionsPage'))
 
 const DashboardPage = lazy(() => import('@/pages/DashboardPage'))
@@ -86,6 +87,7 @@ const router = createBrowserRouter([
                 children: [
                   { path: '/app/mes-annonces', element: withSuspense(<PartnerListingsPage />) },
                   { path: '/app/mes-produits', element: withSuspense(<PartnerProductsPage />) },
+                  { path: '/app/mes-publications', element: withSuspense(<PartnerEducationalPostsPage />) },
                 ],
               },
               {

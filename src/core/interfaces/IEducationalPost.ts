@@ -5,6 +5,7 @@ export interface IEducationalPost {
   title: string
   content: string
   image_path: string | null
+  video_path: string | null
   partner: IPartnerSummary
   created_at: string
 }

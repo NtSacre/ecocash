@@ -76,17 +76,19 @@ export default function DiscoverPage() {
             )}
 
             {postsQuery.data?.data.map((post) => (
-              <Card
-                key={post.id}
-                description={truncate(post.content, 120)}
-                imageFallbackIcon={
-                  <MaterialIcon className="text-4xl text-on-surface-variant/40" name="menu_book" />
-                }
-                imageUrl={post.image_path}
-                subtitle={post.partner.partner_profile?.company_name ?? post.partner.name}
-                title={post.title}
-              />
-            ))}
+  <div key={post.id} className="space-y-2">
+    {post.video_path && (
+      <video className="h-40 w-full rounded-lg object-cover" controls src={post.video_path} />
+    )}
+    <Card
+      description={truncate(post.content, 120)}
+      imageFallbackIcon={<MaterialIcon className="text-4xl text-on-surface-variant/40" name="menu_book" />}
+      imageUrl={post.video_path ? null : post.image_path}
+      subtitle={post.partner.partner_profile?.company_name ?? post.partner.name}
+      title={post.title}
+    />
+  </div>
+))}
           </section>
         )}
 
