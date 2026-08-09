@@ -57,7 +57,7 @@ const handleSlotSelect = async (slotId: number, date: string) => {
     setIsSlotPickerOpen(false)
     setSuccess(true)
   } catch {
-    // erreur affichée via selectSlot.isError, modal reste ouvert
+    // erreur affichée via selectSlot.isError
   }
 }
 

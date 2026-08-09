@@ -30,6 +30,7 @@ export default function AdminAgentsPage() {
     { header: 'Nom', render: (a) => a.name },
     { header: 'Téléphone', render: (a) => a.phone },
     { header: 'Email', render: (a) => a.email ?? '—' },
+    { header: 'Zone', render: (a) => a.coverage_zone ?? '—' },
   ]
 
   return (
@@ -80,6 +81,15 @@ export default function AdminAgentsPage() {
               {...form.register('email')}
             />
           </div>
+          <div>
+  <label className="ml-1 text-xs font-bold uppercase tracking-widest text-zinc-400">Zone de couverture (optionnel)</label>
+  <input
+    className="mt-2 w-full rounded-lg bg-surface-container-high px-4 py-3 font-medium text-on-surface focus:ring-2 focus:ring-primary/40"
+    placeholder="Ex: Dakar Plateau"
+    type="text"
+    {...form.register('coverage_zone')}
+  />
+</div>
 
           {createAgent.isError && (
             <p className="rounded-2xl bg-error-container px-4 py-3 text-sm text-on-error-container">

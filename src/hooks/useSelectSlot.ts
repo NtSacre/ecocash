@@ -13,6 +13,9 @@ export function useSelectSlot() {
   return useMutation({
     mutationFn: ({ responseId, slotId, date }: SelectSlotPayload) =>
       ResponseService.selectSlot(responseId, slotId, date),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['responses', 'mine'] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['responses', 'mine'] })
+      queryClient.invalidateQueries({ queryKey: ['admin', 'pending-assignments'] })
+    },
   })
 }

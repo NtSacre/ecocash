@@ -10,4 +10,7 @@ export const ResponseService = {
  async selectSlot(responseId: number, collectionSlotId: number, collectionDate: string) {
   return ResponseRepository.selectSlot(responseId, collectionSlotId, collectionDate)
 },
+async listIncoming() {
+  return ResponseRepository.getIncoming()
+},
 }

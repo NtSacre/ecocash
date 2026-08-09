@@ -13,11 +13,20 @@ export const ResponseRepository = {
     })
     return data
   },
-  async selectSlot(responseId: number, collectionSlotId: number, collectionDate: string): Promise<IListingResponse> {
-  const { data } = await apiClient.post<IListingResponse>(`/responses/${responseId}/select-slot`, {
-    collection_slot_id: collectionSlotId,
-    collection_date: collectionDate,
-  })
+  async selectSlot(
+  responseId: number,
+  collectionSlotId: number,
+  collectionDate: string
+): Promise<{ response: IListingResponse; auto_assigned: boolean }> {
+  const { data } = await apiClient.post<{ response: IListingResponse; auto_assigned: boolean }>(
+    `/responses/${responseId}/select-slot`,
+    { collection_slot_id: collectionSlotId, collection_date: collectionDate }
+  )
+  return data
+},
+
+async getIncoming(): Promise<IListingResponse[]> {
+  const { data } = await apiClient.get<IListingResponse[]>('/my-listings-responses')
   return data
 },
 }

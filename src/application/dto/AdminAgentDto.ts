@@ -3,4 +3,5 @@ export interface CreateAgentDto {
   email?: string
   phone: string
   preferred_otp_channel?: 'email' | 'sms' | 'whatsapp'
+  coverage_zone?: string
 }

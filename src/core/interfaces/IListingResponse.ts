@@ -36,5 +36,6 @@ export interface IListingResponse {
   collection_date: string | null
   collection: ICollectionSummary | null
   payment: IPaymentSummary | null
+  particulier?: { id: number; name: string; phone: string }
   created_at: string
 }
