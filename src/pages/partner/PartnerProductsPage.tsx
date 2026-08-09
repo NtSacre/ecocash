@@ -19,6 +19,8 @@ import { formatCurrency } from '@/utils/currency'
 import { useUpdateProduct } from '@/hooks/useUpdateProduct'
 import { useDeleteProduct } from '@/hooks/useDeleteProduct'
 import type { IProduct } from '@/core/interfaces/IProduct'
+import { FileUpload } from '@/components/FileUpload/FileUpload'
+import { useImageUpload } from '@/hooks/useMediaUpload'
 
 export default function PartnerProductsPage() {
   const navigate = useNavigate()
@@ -30,6 +32,9 @@ export default function PartnerProductsPage() {
   const updateProduct = useUpdateProduct()
   const deleteProduct = useDeleteProduct()
 
+  const imageUpload = useImageUpload()
+  const [imagePath, setImagePath] = useState<string | null>(null)
+
   const form = useForm<PartnerProductFormValues>({
     resolver: zodResolver(partnerProductFormSchema),
   })
@@ -40,41 +45,34 @@ export default function PartnerProductsPage() {
         name: editingProduct.name,
         description: editingProduct.description ?? '',
         price: editingProduct.price ? Number(editingProduct.price) : undefined,
-        image_path: editingProduct.image_path ?? '',
       })
+      setImagePath(editingProduct.image_path ?? null)
     } else {
       form.reset({
         name: '',
         description: '',
         price: undefined,
-        image_path: '',
       })
+      setImagePath(null)
     }
   }, [editingProduct])
 
   const onSubmit = form.handleSubmit(async (values) => {
     try {
-      const payload = {
-        ...values,
-        image_path: values.image_path || undefined,
-      }
+      const payload = { ...values, image_path: imagePath ?? undefined }
 
       if (editingProduct) {
-        await updateProduct.mutateAsync({
-          id: editingProduct.id,
-          payload,
-        })
+        await updateProduct.mutateAsync({ id: editingProduct.id, payload })
       } else {
         await createProduct.mutateAsync(payload)
       }
 
       form.reset()
-
+      setImagePath(null)
       setEditingProduct(null)
-
       setIsModalOpen(false)
     } catch {
-      //
+      // erreur affichée via createProduct.isError / updateProduct.isError
     }
   })
 
@@ -94,11 +92,11 @@ export default function PartnerProductsPage() {
       <TopBar
         leftIcon="arrow_back"
         leftLabel="Retour"
-        onLeftClick={() => navigate('/')}
+        onLeftClick={() => navigate('/app')}
         title="Mes produits"
       />
 
-      <main className="mx-auto max-w-screen-7xl space-y-6 px-6 pb-12 pt-24">
+      <main className="mx-auto max-w-screen-xl space-y-6 px-6 pb-12 pt-24">
         <button
           className="action-gradient flex w-full items-center justify-center gap-3 rounded-full py-4 font-headline text-lg font-bold text-white shadow-lg transition-transform active:scale-95"
           onClick={() => setIsModalOpen(true)}
@@ -164,6 +162,7 @@ export default function PartnerProductsPage() {
           setIsModalOpen(false)
           setEditingProduct(null)
           form.reset()
+          setImagePath(null)
         }}
         title={editingProduct ? 'Modifier le produit' : 'Ajouter un produit'}
       >
@@ -205,24 +204,19 @@ export default function PartnerProductsPage() {
             />
           </div>
 
-          <div>
-            <label className="ml-1 text-xs font-bold uppercase tracking-widest text-zinc-400">
-              URL image (optionnel)
-            </label>
-            <input
-              className="mt-2 w-full rounded-lg bg-surface-container-high px-4 py-3 font-medium text-on-surface focus:ring-2 focus:ring-primary/40"
-              placeholder="https://..."
-              type="text"
-              {...form.register('image_path')}
-            />
-            {form.formState.errors.image_path && (
-              <p className="mt-1 text-xs text-error">{form.formState.errors.image_path.message}</p>
-            )}
-          </div>
+          <FileUpload
+            accept="image/jpeg,image/png,image/webp"
+            isUploading={imageUpload.isPending}
+            kind="image"
+            label="Image du produit (optionnel)"
+            onRemove={() => setImagePath(null)}
+            onUpload={(file) => imageUpload.mutate(file, { onSuccess: setImagePath })}
+            value={imagePath}
+          />
 
-          {createProduct.isError && (
+          {(createProduct.isError || updateProduct.isError) && (
             <p className="rounded-2xl bg-error-container px-4 py-3 text-sm text-on-error-container">
-              Impossible d'ajouter le produit.
+              {editingProduct ? 'Impossible de modifier le produit.' : "Impossible d'ajouter le produit."}
             </p>
           )}
 

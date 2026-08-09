@@ -1,14 +1,16 @@
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Select } from '@/components/Select/Select'
+import { FileUpload } from '@/components/FileUpload/FileUpload'
 import { useMaterials } from '@/hooks/useMaterials'
+import { useImageUpload } from '@/hooks/useMediaUpload'
 import { partnerListingFormSchema, type PartnerListingFormValues } from '@/application/validators/partnerListingValidators'
-import { useEffect } from 'react'
 
 interface PartnerListingFormProps {
-  onSubmit: (values: PartnerListingFormValues) => Promise<void>
+  onSubmit: (values: PartnerListingFormValues & { image_path?: string }) => Promise<void>
   isSubmitting: boolean
-  initialValues?: Partial<PartnerListingFormValues>
+  initialValues?: Partial<PartnerListingFormValues> & { image_path?: string }
   submitLabel?: string
 }
 
@@ -18,20 +20,26 @@ export function PartnerListingForm({
   initialValues,
   submitLabel = "Publier l'annonce",
 }: PartnerListingFormProps) {
+  const form = useForm<PartnerListingFormValues>({
+    resolver: zodResolver(partnerListingFormSchema),
+    defaultValues: initialValues,
+  })
+
   const materialsQuery = useMaterials()
+  const imageUpload = useImageUpload()
+  const [imagePath, setImagePath] = useState<string | null>(initialValues?.image_path ?? null)
 
-const form = useForm<PartnerListingFormValues>({
-  resolver: zodResolver(partnerListingFormSchema),
-  defaultValues: initialValues,
-})
+  useEffect(() => {
+    if (initialValues) {
+      form.reset(initialValues)
+      setImagePath(initialValues.image_path ?? null)
+    }
+  }, [initialValues, form])
 
-useEffect(() => {
-  if (initialValues) {
-    form.reset(initialValues)
-  }
-}, [initialValues, form])
+  const handleSubmit = form.handleSubmit((values) => onSubmit({ ...values, image_path: imagePath ?? undefined }))
+
   return (
-    <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+    <form className="space-y-4" onSubmit={handleSubmit}>
       <Select
         error={form.formState.errors.material_id?.message}
         label="Matière"
@@ -110,12 +118,22 @@ useEffect(() => {
         </div>
       </div>
 
+      <FileUpload
+        accept="image/jpeg,image/png,image/webp"
+        isUploading={imageUpload.isPending}
+        kind="image"
+        label="Photo de l'annonce (optionnel)"
+        onRemove={() => setImagePath(null)}
+        onUpload={(file) => imageUpload.mutate(file, { onSuccess: setImagePath })}
+        value={imagePath}
+      />
+
       <button
         className="w-full rounded-lg bg-primary py-3 font-headline font-bold text-on-primary disabled:opacity-60"
         disabled={isSubmitting}
         type="submit"
       >
-       {isSubmitting ? 'Enregistrement...' : submitLabel}
+        {isSubmitting ? 'Enregistrement...' : submitLabel}
       </button>
     </form>
   )

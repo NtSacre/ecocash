@@ -20,6 +20,7 @@ export interface IListing {
   start_date: string | null
   end_date: string | null
   status: ListingStatus
+  image_path: string | null
   material: IMaterial
   partner: IPartnerSummary
 }

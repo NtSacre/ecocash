@@ -2,6 +2,7 @@ export interface CreateListingDto {
   material_id: number
   title: string
   description?: string
+  image_path?: string
   target_quantity: number
   unit_price: number
   min_quantity_per_response: number

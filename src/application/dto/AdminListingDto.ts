@@ -5,6 +5,7 @@ export interface AdminCreateListingDto {
   description?: string
   target_quantity: number
   unit_price: number
+  image_path?: string
   min_quantity_per_response: number
   start_date?: string
   end_date?: string

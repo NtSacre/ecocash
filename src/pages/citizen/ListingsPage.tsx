@@ -58,22 +58,21 @@ export default function ListingsPage() {
             const remaining = remainingQuantity(listing)
 
             return (
-              <Card
-                key={listing.id}
-                badge={hasResponded ? <Badge label="Déjà répondu" tone="primary" /> : undefined}
-                description={`${remaining} ${listing.material.unit} restant · min ${listing.min_quantity_per_response} ${listing.material.unit}`}
-                footer={
-                  <span className="font-headline text-lg font-extrabold text-primary">
-                    {formatCurrency(listing.unit_price)} / {listing.material.unit}
-                  </span>
-                }
-                imageFallbackIcon={
-                  <MaterialIcon className="text-4xl text-on-surface-variant/40" name="recycling" />
-                }
-                onClick={() => navigate(`/app/annonces/${listing.id}`)}
-                subtitle={listing.partner.partner_profile?.company_name ?? listing.partner.name}
-                title={listing.material.name}
-              />
+             <Card
+  key={listing.id}
+  badge={hasResponded ? <Badge label="Déjà répondu" tone="primary" /> : undefined}
+  description={`${remaining} ${listing.material.unit} restant · min ${listing.min_quantity_per_response} ${listing.material.unit}`}
+  footer={
+    <span className="font-headline text-lg font-extrabold text-primary">
+      {formatCurrency(listing.unit_price)} / {listing.material.unit}
+    </span>
+  }
+  imageFallbackIcon={<MaterialIcon className="text-4xl text-on-surface-variant/40" name="recycling" />}
+  imageUrl={listing.image_path}
+  onClick={() => navigate(`/app/annonces/${listing.id}`)}
+  subtitle={listing.partner.partner_profile?.company_name ?? listing.partner.name}
+  title={listing.material.name}
+/>
             )
           })}
         </div>

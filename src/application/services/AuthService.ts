@@ -45,4 +45,8 @@ export const AuthService = {
       TokenManager.clearToken()
     }
   },
+
+  async updateProfile(payload: { name?: string; mobile_money_number?: string; avatar?: string }) {
+  return AuthRepository.updateProfile(payload)
+},
 }

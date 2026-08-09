@@ -13,6 +13,7 @@ export interface IUser {
   status: 'active' | 'pending' | 'suspended'
   mobile_money_number: string | null
   roles: string[]
+  avatar?: string | null
   permissions: string[]
   partner_profile?: { company_name: string; description: string | null; address: string | null } | null
   coverage_zone?: string | null

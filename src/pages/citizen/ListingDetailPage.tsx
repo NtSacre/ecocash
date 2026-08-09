@@ -76,6 +76,9 @@ const handleSlotSelect = async (slotId: number, date: string) => {
       <TopBar leftIcon="arrow_back" leftLabel="Retour" onLeftClick={() => navigate('/app/annonces')} title={listing.material.name} />
 
       <main className="mx-auto max-w-md space-y-8 px-6 pb-12 pt-24">
+          {listing.image_path && (
+    <img alt={listing.title} className="h-48 w-full rounded-lg object-cover" src={listing.image_path} />
+  )}
         <section className="space-y-2">
           <p className="text-xs font-bold uppercase tracking-widest text-primary">
             {listing.partner.partner_profile?.company_name ?? listing.partner.name}

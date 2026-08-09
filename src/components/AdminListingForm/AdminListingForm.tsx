@@ -1,20 +1,25 @@
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Select } from '@/components/Select/Select'
+import { FileUpload } from '@/components/FileUpload/FileUpload'
 import { useMaterials } from '@/hooks/useMaterials'
 import { useAdminPartners } from '@/hooks/useAdminPartners'
+import { useImageUpload } from '@/hooks/useMediaUpload'
 import { adminListingFormSchema, type AdminListingFormValues } from '@/application/validators/adminListingValidators'
 import type { IListing } from '@/core/interfaces/IListing'
 
 interface AdminListingFormProps {
   initialValues?: IListing
-  onSubmit: (values: AdminListingFormValues) => Promise<void>
+  onSubmit: (values: AdminListingFormValues & { image_path?: string }) => Promise<void>
   isSubmitting: boolean
 }
 
 export function AdminListingForm({ initialValues, onSubmit, isSubmitting }: AdminListingFormProps) {
   const materialsQuery = useMaterials()
   const partnersQuery = useAdminPartners()
+  const imageUpload = useImageUpload()
+  const [imagePath, setImagePath] = useState<string | null>(initialValues?.image_path ?? null)
 
   const form = useForm<AdminListingFormValues>({
     resolver: zodResolver(adminListingFormSchema),
@@ -33,8 +38,10 @@ export function AdminListingForm({ initialValues, onSubmit, isSubmitting }: Admi
       : undefined,
   })
 
+  const handleSubmit = form.handleSubmit((values) => onSubmit({ ...values, image_path: imagePath ?? undefined }))
+
   return (
-    <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+    <form className="space-y-4" onSubmit={handleSubmit}>
       <Select
         error={form.formState.errors.partner_id?.message}
         label="Partenaire"
@@ -121,6 +128,16 @@ export function AdminListingForm({ initialValues, onSubmit, isSubmitting }: Admi
           {form.formState.errors.end_date && <p className="mt-1 text-xs text-error">{form.formState.errors.end_date.message}</p>}
         </div>
       </div>
+
+      <FileUpload
+        accept="image/jpeg,image/png,image/webp"
+        isUploading={imageUpload.isPending}
+        kind="image"
+        label="Photo de l'annonce (optionnel)"
+        onRemove={() => setImagePath(null)}
+        onUpload={(file) => imageUpload.mutate(file, { onSuccess: setImagePath })}
+        value={imagePath}
+      />
 
       <button
         className="w-full rounded-lg bg-primary py-3 font-headline font-bold text-on-primary disabled:opacity-60"

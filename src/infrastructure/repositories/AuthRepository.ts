@@ -2,6 +2,7 @@ import { apiClient } from '@/infrastructure/http/apiClient'
 import { AUTH_ROUTES } from '@/core/constants/authRoutes'
 import type { RegisterDto, LoginMobileDto, VerifyOtpDto, ResendOtpDto } from '@/application/dto/AuthDto'
 import type { IRequiresOtpResponse, IAuthSuccessResponse, IMeResponse } from '@/core/interfaces/IAuth'
+import type { IUser } from '@/core/interfaces/IUser'
 
 
 export const AuthRepository = {
@@ -28,4 +29,9 @@ async me(): Promise<IMeResponse> {
   async logout(): Promise<void> {
     await apiClient.post(AUTH_ROUTES.LOGOUT)
   },
+
+  async updateProfile(payload: { name?: string; mobile_money_number?: string; avatar?: string }): Promise<IUser> {
+  const { data } = await apiClient.put<IUser>(AUTH_ROUTES.ME, payload)
+  return data
+},
 }

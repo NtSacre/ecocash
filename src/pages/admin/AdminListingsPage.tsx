@@ -29,14 +29,14 @@ export default function AdminListingsPage() {
   const listingsQuery = useAdminListings(statusFilter ? { status: statusFilter } : {})
   const { create, update, remove, suspend, renew } = useAdminListingMutations()
 
-  const handleSubmit = async (values: AdminListingFormValues) => {
-    if (formModal === 'create') {
-      await create.mutateAsync(values)
-    } else if (formModal) {
-      await update.mutateAsync({ id: formModal.id, payload: values })
-    }
-    setFormModal(null)
+const handleSubmit = async (values: AdminListingFormValues & { image_path?: string }) => {
+  if (formModal === 'create') {
+    await create.mutateAsync(values)
+  } else if (formModal) {
+    await update.mutateAsync({ id: formModal.id, payload: values })
   }
+  setFormModal(null)
+}
 
   const columns: TableColumn<IListing>[] = [
     { header: 'Titre', render: (l) => l.title },
