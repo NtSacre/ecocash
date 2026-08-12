@@ -34,7 +34,7 @@ export default function DiscoverPage() {
           <button
             className={[
               'flex-1 rounded-full py-3 text-sm font-bold transition-colors',
-              activeTab === 'posts' ? 'bg-white text-primary shadow-sm' : 'text-on-surface-variant',
+              activeTab === 'posts' ? 'bg-surface-container-lowest text-primary shadow-sm' : 'text-on-surface-variant',
             ].join(' ')}
             onClick={() => setActiveTab('posts')}
             type="button"
@@ -45,7 +45,7 @@ export default function DiscoverPage() {
             className={[
               'flex-1 rounded-full py-3 text-sm font-bold transition-colors',
               activeTab === 'products'
-                ? 'bg-white text-primary shadow-sm'
+                ? 'bg-surface-container-lowest text-primary shadow-sm'
                 : 'text-on-surface-variant',
             ].join(' ')}
             onClick={() => setActiveTab('products')}

@@ -11,7 +11,7 @@ export default function CitizenHomePage() {
 
   return (
     <div className="text-on-surface">
-      <TopBar avatar={avatars.main} title="EcoCash Senegal" />
+      <TopBar  title="EcoCash Senegal" />
 
       <main className="mx-auto flex w-full max-w-screen-xl flex-col gap-8 px-6 pt-24">
         <section className="space-y-1 pt-2">

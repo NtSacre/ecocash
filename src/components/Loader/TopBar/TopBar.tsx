@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { MaterialIcon } from '@/components/Loader/MaterialIcon/MaterialIcon'
 import { Drawer } from '@/components/Drawer/Drawer'
 import { AppDrawerContent } from '@/components/AppDrawerContent/AppDrawerContent'
+import { useAuthContext } from '@/context/AuthContext'
 
 interface TopBarProps {
   title: string
@@ -24,11 +25,16 @@ export function TopBar({
   titleClassName = '',
 }: TopBarProps) {
   const navigate = useNavigate()
+  const { user } = useAuthContext()
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+
+  // La prop `avatar` reste possible pour forcer une image spécifique,
+  // sinon on utilise automatiquement celle de l'utilisateur connecté.
+  const resolvedAvatar = avatar ?? user?.avatar ?? null
 
   return (
     <>
-      <header className="fixed top-0 z-50 w-full bg-white/80 backdrop-blur-xl shadow-sm">
+      <header className="fixed top-0 z-50 w-full bg-surface/80 backdrop-blur-xl shadow-sm">
         <div className="mx-auto flex w-full max-w-screen-xl items-center justify-between px-6 py-4">
           <div className="flex items-center gap-4">
             {onLeftClick ? (
@@ -62,8 +68,8 @@ export function TopBar({
               onClick={() => navigate('/app/profil')}
               type="button"
             >
-              {avatar ? (
-                <img alt="Profil utilisateur" className="h-full w-full object-cover" src={avatar} />
+              {resolvedAvatar ? (
+                <img alt="Profil utilisateur" className="h-full w-full object-cover" src={resolvedAvatar} />
               ) : (
                 <MaterialIcon
                   className="flex h-full w-full items-center justify-center text-on-surface-variant"

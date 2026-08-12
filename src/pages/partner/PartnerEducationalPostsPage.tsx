@@ -48,7 +48,7 @@ export default function PartnerEducationalPostsPage() {
 
   return (
     <div className="text-on-surface">
-      <TopBar leftIcon="arrow_back" leftLabel="Retour" onLeftClick={() => navigate('/app')} title="Mes publications" />
+      <TopBar leftIcon="arrow_back" leftLabel="Retour" onLeftClick={() => navigate('/')} title="Mes publications" />
 
       <main className="mx-auto max-w-screen-xl space-y-6 px-6 pb-12 pt-24">
         <button

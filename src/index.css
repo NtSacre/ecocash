@@ -66,6 +66,45 @@
   --radius-xl: 3rem;
 }
 
+.dark {
+  --color-background: #1a1c17;
+  --color-on-background: #e2e4dc;
+  --color-surface: #1a1c17;
+  --color-surface-dim: #141610;
+  --color-surface-bright: #3a3d35;
+  --color-on-surface: #e2e4dc;
+  --color-on-surface-variant: #c3c8ba;
+  --color-surface-variant: #43483b;
+  --color-surface-container-lowest: #14160f;
+  --color-surface-container-low: #22241d;
+  --color-surface-container: #262921;
+  --color-surface-container-high: #31342b;
+  --color-surface-container-highest: #3c3f35;
+  --color-inverse-surface: #e2e4dc;
+  --color-inverse-on-surface: #2f3131;
+
+  --color-outline: #8d9686;
+  --color-outline-variant: #43483b;
+
+  /* Conteneurs — inversés pour rester lisibles sur fond sombre */
+  --color-primary-container: #1e5522;
+  --color-on-primary-container: #a3f69c;
+
+  --color-secondary-container: #35492f;
+  --color-on-secondary-container: #c6e9be;
+
+  --color-tertiary-container: #5c2340;
+  --color-on-tertiary-container: #ffd9e2;
+
+  --color-error-container: #5c1210;
+  --color-on-error-container: #ffb4ab;
+}
+
+.dark body {
+  background: radial-gradient(circle at top right, rgba(46, 125, 50, 0.1), transparent 32%),
+    radial-gradient(circle at bottom left, rgba(163, 246, 156, 0.06), transparent 28%), #1a1c17;
+}
+
 body {
   font-family: "Inter", sans-serif;
   background:

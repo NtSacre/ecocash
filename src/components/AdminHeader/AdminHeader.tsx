@@ -7,7 +7,7 @@ export function AdminHeader() {
   const logout = useLogout()
 
   return (
-    <header className="flex items-center justify-between border-b border-outline-variant/10 bg-white px-8 py-4">
+    <header className="flex items-center justify-between border-b border-outline-variant/10 bg-surface-container-lowest px-8 py-4">
       <div />
       <div className="flex items-center gap-4">
         <div className="text-right">

@@ -38,47 +38,47 @@ export default function PartnerHomePage() {
           </section>
         )}
 
-        <section className="flex items-center justify-between rounded-lg bg-secondary-container/40 p-5">
+        <button
+          className="flex items-center justify-between rounded-lg bg-secondary-container/40 p-5 text-left transition-transform active:scale-[0.98]"
+          onClick={() => navigate('/app/annonces')}
+          type="button"
+        >
           <div>
             <p className="font-headline text-base font-bold text-on-secondary-container">Marché</p>
             <p className="text-xs text-on-secondary-container/80">Annonces des autres partenaires</p>
           </div>
-          <button
-            className="rounded-full bg-white p-3 shadow-sm transition-transform active:scale-90"
-            onClick={() => navigate('/app/annonces')}
-            type="button"
-          >
+          <span className="rounded-full bg-surface-container-lowest p-3 shadow-sm">
             <MaterialIcon className="text-primary" name="arrow_forward" />
-          </button>
-        </section>
-          
-        <section className="flex items-center justify-between rounded-lg bg-tertiary-container/20 p-5">
-  <div>
-    <p className="font-headline text-base font-bold text-on-surface">Mes produits</p>
-    <p className="text-xs text-on-surface-variant">Produits recyclés à mettre en avant</p>
-  </div>
-  <button
-    className="rounded-full bg-white p-3 shadow-sm transition-transform active:scale-90"
-    onClick={() => navigate('/app/mes-produits')}
-    type="button"
-  >
-    <MaterialIcon className="text-primary" name="arrow_forward" />
-  </button>
-</section>
+          </span>
+        </button>
 
-<section className="flex items-center justify-between rounded-lg bg-primary-container/10 p-5">
-  <div>
-    <p className="font-headline text-base font-bold text-on-surface">Mes publications</p>
-    <p className="text-xs text-on-surface-variant">Contenus éducatifs sur le recyclage</p>
-  </div>
-  <button
-    className="rounded-full bg-white p-3 shadow-sm transition-transform active:scale-90"
-    onClick={() => navigate('/app/mes-publications')}
-    type="button"
-  >
-    <MaterialIcon className="text-primary" name="arrow_forward" />
-  </button>
-</section>
+        <button
+          className="flex items-center justify-between rounded-lg bg-tertiary-container/20 p-5 text-left transition-transform active:scale-[0.98]"
+          onClick={() => navigate('/app/mes-produits')}
+          type="button"
+        >
+          <div>
+            <p className="font-headline text-base font-bold text-on-surface">Mes produits</p>
+            <p className="text-xs text-on-surface-variant">Produits recyclés à mettre en avant</p>
+          </div>
+          <span className="rounded-full bg-surface-container-lowest p-3 shadow-sm">
+            <MaterialIcon className="text-primary" name="arrow_forward" />
+          </span>
+        </button>
+
+        <button
+          className="flex items-center justify-between rounded-lg bg-primary-container/10 p-5 text-left transition-transform active:scale-[0.98]"
+          onClick={() => navigate('/app/mes-publications')}
+          type="button"
+        >
+          <div>
+            <p className="font-headline text-base font-bold text-on-surface">Mes publications</p>
+            <p className="text-xs text-on-surface-variant">Contenus éducatifs sur le recyclage</p>
+          </div>
+          <span className="rounded-full bg-surface-container-lowest p-3 shadow-sm">
+            <MaterialIcon className="text-primary" name="arrow_forward" />
+          </span>
+        </button>
       </main>
     </div>
   )

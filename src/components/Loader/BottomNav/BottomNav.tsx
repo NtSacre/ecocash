@@ -15,8 +15,7 @@ interface BottomNavProps {
 
 export function BottomNav({ items }: BottomNavProps) {
   return (
-    <nav className="fixed bottom-0 left-0 z-50 w-full border-t border-outline-variant/10 bg-white/95 shadow-[0_-8px_24px_rgba(0,0,0,0.04)] backdrop-blur-lg">
-      <div
+<nav className="fixed bottom-0 left-0 z-50 w-full border-t border-outline-variant/10 bg-surface/95 shadow-[0_-8px_24px_rgba(0,0,0,0.04)] backdrop-blur-lg">      <div
         className="mx-auto flex max-w-screen-xl items-stretch px-1 pt-2"
         style={{ paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom))' }}
       >

@@ -46,7 +46,14 @@ export const AuthService = {
     }
   },
 
-  async updateProfile(payload: { name?: string; mobile_money_number?: string; avatar?: string }) {
+  async updateProfile(payload: {
+  name?: string
+  email?: string
+  mobile_money_number?: string
+  coverage_zone?: string
+  preferred_otp_channel?: string
+  avatar?: string
+}) {
   return AuthRepository.updateProfile(payload)
 },
 }

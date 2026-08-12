@@ -9,7 +9,7 @@ interface RoleGuardProps {
 export function RoleGuard({ allowedRoles }: RoleGuardProps) {
   const { user } = useAuthContext()
 
-  const hasAccess = user?.roles.some((roleName) => allowedRoles.includes(roleName as UserRole))
+  const hasAccess = user?.roles?.some((roleName) => allowedRoles.includes(roleName as UserRole)) ?? false
 
   if (!hasAccess) {
     return <Navigate to="/unauthorized" replace />

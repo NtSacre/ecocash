@@ -5,13 +5,16 @@ import { queryClient } from '@/infrastructure/http/queryClient'
 import { AuthProvider } from '@/context/AuthContext'
 import { AppRouter } from '@/routes/AppRouter'
 import '@/index.css'
+import { ThemeProvider } from './context/ThemeContext'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <AppRouter />
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <AppRouter />
+        </AuthProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   </StrictMode>
 )

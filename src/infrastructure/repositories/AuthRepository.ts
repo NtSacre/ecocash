@@ -30,8 +30,19 @@ async me(): Promise<IMeResponse> {
     await apiClient.post(AUTH_ROUTES.LOGOUT)
   },
 
-  async updateProfile(payload: { name?: string; mobile_money_number?: string; avatar?: string }): Promise<IUser> {
-  const { data } = await apiClient.put<IUser>(AUTH_ROUTES.ME, payload)
-  return data
+async updateProfile(payload: {
+  name?: string
+  email?: string
+  mobile_money_number?: string
+  coverage_zone?: string
+  preferred_otp_channel?: string
+  notifications_enabled?: boolean
+  avatar?: string
+}) {
+  const { data } = await apiClient.put<{ success: boolean; message: string; data: Record<string, unknown> }>(
+    AUTH_ROUTES.ME,
+    payload
+  )
+  return data.data
 },
 }

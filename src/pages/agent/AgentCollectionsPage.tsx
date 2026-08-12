@@ -42,7 +42,7 @@ export default function AgentCollectionsPage() {
 
   return (
     <div className="text-on-surface">
-      <TopBar leftIcon="arrow_back" leftLabel="Retour" onLeftClick={() => navigate('/app')} title="Mes collectes" />
+      <TopBar leftIcon="arrow_back" leftLabel="Retour" onLeftClick={() => navigate('/')} title="Mes collectes" />
 
       <main className="mx-auto max-w-screen-xl space-y-4 px-6 pb-12 pt-24">
         {collectionsQuery.isLoading && <Loader label="Chargement..." />}

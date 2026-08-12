@@ -92,7 +92,7 @@ export default function PartnerProductsPage() {
       <TopBar
         leftIcon="arrow_back"
         leftLabel="Retour"
-        onLeftClick={() => navigate('/app')}
+        onLeftClick={() => navigate('/')}
         title="Mes produits"
       />
 

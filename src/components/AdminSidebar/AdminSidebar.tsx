@@ -4,7 +4,7 @@ import { ADMIN_NAV_ITEMS } from '@/core/constants/adminNav'
 
 export function AdminSidebar() {
   return (
-    <aside className="flex w-64 shrink-0 flex-col border-r border-outline-variant/10 bg-white">
+    <aside className="flex w-64 shrink-0 flex-col border-r border-outline-variant/10 bg-surface-container-lowest">
       <div className="flex items-center gap-2 px-6 py-6">
         <MaterialIcon className="text-2xl text-primary" name="eco" />
         <span className="font-headline text-lg font-black tracking-tight text-primary">EcoCash Admin</span>

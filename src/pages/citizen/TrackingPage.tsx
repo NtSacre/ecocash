@@ -89,14 +89,14 @@ export default function TrackingPage() {
         {isPartner && (
           <div className="flex gap-2 rounded-full bg-surface-container-high p-1">
             <button
-              className={`flex-1 rounded-full py-3 text-sm font-bold transition-colors ${tab === 'mine' ? 'bg-white text-primary shadow-sm' : 'text-on-surface-variant'}`}
+              className={`flex-1 rounded-full py-3 text-sm font-bold transition-colors ${tab === 'mine' ? 'bg-surface-container-lowest text-primary shadow-sm' : 'text-on-surface-variant'}`}
               onClick={() => setTab('mine')}
               type="button"
             >
               Mes réponses
             </button>
             <button
-              className={`flex-1 rounded-full py-3 text-sm font-bold transition-colors ${tab === 'incoming' ? 'bg-white text-primary shadow-sm' : 'text-on-surface-variant'}`}
+              className={`flex-1 rounded-full py-3 text-sm font-bold transition-colors ${tab === 'incoming' ? 'bg-surface-container-lowest text-primary shadow-sm' : 'text-on-surface-variant'}`}
               onClick={() => setTab('incoming')}
               type="button"
             >

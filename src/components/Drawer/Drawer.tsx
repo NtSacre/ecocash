@@ -14,8 +14,7 @@ export function Drawer({ isOpen, onClose, children }: DrawerProps) {
   return createPortal(
     <div className="fixed inset-0 z-[60] flex">
       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
-      <div className="relative flex h-full w-72 max-w-[80%] flex-col bg-white shadow-xl">
-        <div className="flex items-center justify-between border-b border-outline-variant/10 px-5 py-4">
+<div className="relative flex h-full w-72 max-w-[80%] flex-col bg-surface-container-lowest shadow-xl">        <div className="flex items-center justify-between border-b border-outline-variant/10 px-5 py-4">
           <span className="font-headline text-lg font-bold text-on-surface">Menu</span>
           <button className="rounded-full p-1 hover:bg-surface-container-high" onClick={onClose} type="button">
             <MaterialIcon name="close" />

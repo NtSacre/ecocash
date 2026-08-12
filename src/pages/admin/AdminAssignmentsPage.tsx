@@ -80,14 +80,14 @@ export default function AdminAssignmentsPage() {
 
       <div className="flex gap-2 rounded-full bg-surface-container-high p-1">
         <button
-          className={`flex-1 rounded-full py-3 text-sm font-bold transition-colors ${tab === 'pending' ? 'bg-white text-primary shadow-sm' : 'text-on-surface-variant'}`}
+          className={`flex-1 rounded-full py-3 text-sm font-bold transition-colors ${tab === 'pending' ? 'bg-surface-container-lowest text-primary shadow-sm' : 'text-on-surface-variant'}`}
           onClick={() => setTab('pending')}
           type="button"
         >
           En attente ({pendingQuery.data?.length ?? 0})
         </button>
         <button
-          className={`flex-1 rounded-full py-3 text-sm font-bold transition-colors ${tab === 'assigned' ? 'bg-white text-primary shadow-sm' : 'text-on-surface-variant'}`}
+          className={`flex-1 rounded-full py-3 text-sm font-bold transition-colors ${tab === 'assigned' ? 'bg-surface-container-lowest text-primary shadow-sm' : 'text-on-surface-variant'}`}
           onClick={() => setTab('assigned')}
           type="button"
         >
